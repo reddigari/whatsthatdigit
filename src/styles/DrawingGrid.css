@@ -1,14 +1,3 @@
-.DrawingGrid {
-    cursor: crosshair;
-}
-.DrawingGrid.drawing {
-    cursor: cell;
-}
-.Cell {
-    fill: white;
-    stroke: grey;
-    stroke-width: 1px;
-}
-.Cell.filled {
-    fill: black;
+.DrawingGrid canvas {
+    border: 1px solid #ccc;
 }

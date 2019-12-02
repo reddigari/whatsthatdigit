@@ -23,23 +23,13 @@ class App extends Component {
             pixData: pixData,
             estimates: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         };
-        this.updatePixel = this.updatePixel.bind(this);
-        this.clearPixels = this.clearPixels.bind(this);
-        this.updateEstimates = this.updateEstimates.bind(this);
+        this.handleDrawingChange = this.handleDrawingChange.bind(this);
         this.postData = this.postData.bind(this);
+        this.updateEstimates = this.updateEstimates.bind(this);
     }
 
-    updatePixel(ri, ci) {
-        var data = this.state.pixData;
-        data[ri][ci] = 1;
-        this.setState({pixData: data});
-    }
-
-    clearPixels() {
-        const emptyData = Array(this.state.rows).fill().map(() =>
-            Array(this.state.cols).fill(0)
-        );
-        this.setState({pixData: emptyData});
+    handleDrawingChange(data) {
+        this.setState({pixData: data}, this.updateEstimates);
     }
 
     async postData() {
@@ -79,13 +69,7 @@ class App extends Component {
                     <Col md={6}>
                         <DrawingGrid rows={this.state.rows} cols={this.state.cols}
                             pixData={this.state.pixData}
-                            onPixUpdate={ this.updatePixel } />
-                        <Row className="mt-3" >
-                            <Col>
-                                <Button variant="danger" className="mr-3" onClick={this.clearPixels}>Clear</Button>
-                                <Button variant="success" onClick={this.updateEstimates}>Submit</Button>
-                            </Col>
-                        </Row>
+                            onPixUpdate={this.handleDrawingChange} />
                     </Col>
                     <Col md={6}>
                         <Predictions estimates={this.state.estimates} />

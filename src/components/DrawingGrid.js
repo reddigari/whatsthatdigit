@@ -1,62 +1,87 @@
-import React, { useState } from "react";
+import React, { Component, useState } from "react";
+import CanvasDraw from "react-canvas-draw";
+import { Button } from "react-bootstrap";
+import { mean } from "d3-array";
 import "../styles/DrawingGrid.css";
 
+window.d3mean = mean;
 
-function DrawingGrid(props) {
+class DrawingGrid extends Component {
 
-    const [drawing, setDrawing] = useState(false);
+    constructor(props) {
+        super(props);
+        this.canvasRef = React.createRef();
+        this.clear = this.clear.bind(this);
+        this.handleDraw = this.handleDraw.bind(this);
+    }
 
-    const width = 500,
-        height = 500,
-        cellWidth = Math.floor(width / props.cols),
-        cellHeight = Math.floor(height / props.rows);
-
-    // create rows and cols of Cells
-    // rows are <g> elements translated vertically
-    const cells = props.pixData.map((row, ri) =>
-        <g key={`row-${ri}`} transform={`translate(0, ${ri * cellHeight})`}>
-            { row.map((col, ci) =>
-                <Cell rowIdx={ri} colIdx={ci}
-                    width={cellWidth} height={cellHeight}
-                    key={`cell-${ri}-${ci}`}
-                    drawing={drawing}
-                    filled={row[ci] === 1}
-                    onFill={ props.onPixUpdate }
-                />
-            )}
-        </g>
-    );
-
-    return (
-        <div className={`DrawingGrid ${drawing ? 'drawing': ''}`}>
-            <svg width="500" height="500"
-                onMouseDown={ () => setDrawing(true) }
-                onMouseUp={ () => setDrawing(false) }
-                onMouseLeave={ () => setDrawing(false) }>
-                {cells}
-            </svg>
-        </div>
-    )
-}
-
-
-function Cell(props) {
-
-    const handleFill = () => {
-        if (props.drawing) {
-            props.onFill(props.rowIdx, props.colIdx);
+    clear() {
+        if (this.canvasRef.current) {
+            this.canvasRef.current.clear();
         }
     }
 
-    return (
-        <rect className={`Cell ${props.filled ? 'filled' : null}`}
-            x={props.width * props.colIdx}
-            width={props.width} height={props.height}
-            onMouseEnter={ handleFill }
-            onMouseLeave={ handleFill }
-            onMouseUp={ handleFill }
-        />
-    )
+    getAlphaValues(array) {
+        const newSize = Math.floor(array.length / 4);
+        var out = new Uint8Array(newSize);
+        for (let i = 0; i < newSize; ++i) {
+            out[i] = array[(4 * i) + 3];
+        }
+        return out;
+    }
+
+    posIn1DArray(rowSize, x, y) {
+        return (y * rowSize) + x;
+    }
+
+    valueFromBigArray(array, ri, ci, cellSize, origSize) {
+        const rowStart = ri * cellSize,
+            rowEnd = rowStart + cellSize - 1,
+            colStart = ci * cellSize;
+        var values = [];
+        for (let i = rowStart; i <= rowEnd; ++i) {
+            let pos = this.posIn1DArray(origSize, colStart, i);
+            values = [values, ...array.slice(pos, pos + cellSize)]; 
+        }
+        return mean(values) / 255;
+    }
+
+    getModelInput(alphas) {
+        const origSize = Math.floor(Math.sqrt(alphas.length));
+        const cellSize = origSize / 28;
+        // initialize our 28x28 output to feed into model
+        var out = Array(28).fill().map(() => Array(28).fill(0));
+        // fill each entry of the 28x28 by finding the correspoinding
+        // hi-res pixels and averaging
+        out.forEach((row, ri) => {
+            row.forEach((col, ci) => {
+                out[ri][ci] = this.valueFromBigArray(alphas, ri, ci, cellSize, origSize);
+            })
+        });
+        return out;
+    }
+
+    handleDraw() {
+        const canvas = this.canvasRef.current; 
+        const { width, height } = canvas.canvas.drawing;
+        const ctx = canvas.ctx.drawing;
+        const imageData = ctx.getImageData(0, 0, width, height);
+        const alphas = this.getAlphaValues(imageData.data);
+        const out = this.getModelInput(alphas);
+        this.props.onPixUpdate(out);
+    }
+
+    render() {
+        return (
+            <div className="DrawingGrid" onMouseUp={this.handleDraw}
+                onTouchEnd={this.handleDraw}>
+                <CanvasDraw ref={this.canvasRef} lazyRadius={0}
+                    canvasWidth={280} canvasHeight={280} />
+                <Button size="sm" variant="secondary" 
+                    onClick={this.clear}>Clear</Button>
+            </div>
+        )
+    }
 }
 
 export default DrawingGrid;
