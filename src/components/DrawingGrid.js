@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import CanvasDraw from "react-canvas-draw";
 import { Button } from "react-bootstrap";
-import { mean } from "d3-array";
 import "../styles/DrawingGrid.css";
 
-window.d3mean = mean;
 
 class DrawingGrid extends Component {
 
@@ -22,44 +20,41 @@ class DrawingGrid extends Component {
         this.props.onClear();
     }
 
-    getAlphaValues(array) {
+    imageDataToAlphas(array) {
         const newSize = Math.floor(array.length / 4);
         var out = new Uint8Array(newSize);
         for (let i = 0; i < newSize; ++i) {
-            out[i] = array[(4 * i) + 3];
+            // get alpha value scaled to 0-1
+            out[i] = array[(4 * i) + 3] / 255;
         }
         return out;
     }
 
-    posIn1DArray(rowSize, x, y) {
-        return (y * rowSize) + x;
+    idxToModelCell(idx, rowSize, cellSize) {
+        const origRow = Math.floor(idx / rowSize),
+            origCol = idx % rowSize,
+            row = Math.floor(origRow / cellSize),
+            col = Math.floor(origCol / cellSize);
+        return [row, col];
     }
 
-    valueFromBigArray(array, ri, ci, cellSize, origSize) {
-        const rowStart = ri * cellSize,
-            rowEnd = rowStart + cellSize - 1,
-            colStart = ci * cellSize;
-        var values = [];
-        for (let i = rowStart; i <= rowEnd; ++i) {
-            let pos = this.posIn1DArray(origSize, colStart, i);
-            values = [values, ...array.slice(pos, pos + cellSize)];
-        }
-        return mean(values) / 255;
-    }
-
-    getModelInput(alphas) {
-        const origSize = Math.floor(Math.sqrt(alphas.length));
-        const cellSize = origSize / 28;
-        // initialize our 28x28 output to feed into model
-        var out = Array(28).fill().map(() => Array(28).fill(0));
-        // fill each entry of the 28x28 by finding the correspoinding
-        // hi-res pixels and averaging
-        out.forEach((row, ri) => {
-            row.forEach((col, ci) => {
-                out[ri][ci] = this.valueFromBigArray(alphas, ri, ci, cellSize, origSize);
-            })
+    imageDataToModelData(imageData, modelDim = 28) {
+        const alphas = this.imageDataToAlphas(imageData); // ignore RGB values
+        const rowSize = Math.floor(Math.sqrt(alphas.length)); // dimension of image data
+        const cellSize = rowSize / modelDim; // number of image pixels per model pixel
+        var values = Array(modelDim).fill().map(() => Array(modelDim).fill(0));
+        var counts = Array(modelDim).fill().map(() => Array(modelDim).fill(0));
+        alphas.forEach((d, i) => {
+            const [row, col] = this.idxToModelCell(i, rowSize, cellSize); // position in model
+            values[row][col] += d
+            counts[row][col] += 1
         });
-        return out;
+        for (let i = 0; i < modelDim; ++i) {
+            for (let j = 0; j < modelDim; ++j) {
+                values[i][j] /= counts[i][j]
+            }
+        }
+        return values;
     }
 
     handleDraw() {
@@ -67,9 +62,8 @@ class DrawingGrid extends Component {
         const { width, height } = canvas.canvas.drawing;
         const ctx = canvas.ctx.drawing;
         const imageData = ctx.getImageData(0, 0, width, height);
-        const alphas = this.getAlphaValues(imageData.data);
-        const out = this.getModelInput(alphas);
-        this.props.onPixUpdate(out);
+        const modelData = this.imageDataToModelData(imageData.data);
+        this.props.onPixUpdate(modelData);
     }
 
     render() {
