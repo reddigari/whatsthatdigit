@@ -3,7 +3,7 @@ import DrawingGrid from "./DrawingGrid.js";
 import Predictions from "./Predictions.js";
 import "../styles/App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { ENDPOINT } from "../constants.js";
 
 
@@ -58,21 +58,27 @@ class App extends Component {
     render() {
         return (
             <Container className="App">
-                <Row><Col><h1>What&apos;s That Digit</h1></Col></Row>
-                <Row>
+                <Row className="justify-content-center">
+                    <Col md={12}>
+                        <h1>Digit Recognizer</h1>
+                    </Col>
                     <Col md={6}>
                         <p>Draw a digit (0-9) in the grid below by pressing the mouse button
-                            and moving the mouse. Draw slowly.</p>
+                            and moving the mouse.</p>
                     </Col>
                 </Row>
-                <Row>
-                    <Col md={6}>
-                        <DrawingGrid rows={this.state.rows} cols={this.state.cols}
-                            pixData={this.state.pixData}
-                            onPixUpdate={this.handleDrawingChange} />
-                    </Col>
-                    <Col md={6}>
-                        <Predictions estimates={this.state.estimates} />
+                <Row className="justify-content-center">
+                    <Col md={8}>
+                        <Row>
+                            <Col>
+                                <DrawingGrid rows={this.state.rows} cols={this.state.cols}
+                                    pixData={this.state.pixData}
+                                    onPixUpdate={this.handleDrawingChange} />
+                            </Col>
+                            <Col>
+                                <Predictions estimates={this.state.estimates} />
+                            </Col>
+                        </Row>
                     </Col>
                 </Row>
             </Container>
