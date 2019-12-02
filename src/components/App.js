@@ -29,6 +29,13 @@ class App extends Component {
         this.updateEstimates = this.updateEstimates.bind(this);
     }
 
+    componentDidMount() {
+        // Lambda backend needs several seconds to get going
+        // if it hasn't been recently invoked, so send request
+        // on mount
+        this.postData();
+    }
+
     handleDrawingChange(data) {
         this.setState({pixData: data}, this.updateEstimates);
     }
@@ -64,13 +71,14 @@ class App extends Component {
     render() {
         return (
             <Container className="App">
-                <Row className="justify-content-center">
+                <Row className="justify-content-center mb-3">
                     <Col md={12}>
                         <h1>Digit Recognizer</h1>
                     </Col>
                     <Col md={6}>
-                        <p>Draw a digit (0-9) in the grid below by pressing the mouse button
-                            and moving the mouse.</p>
+                        <p><b>Draw a digit (0-9) in the grid below by pressing the mouse button
+                            and moving the mouse.</b> The first predictions might take several
+                            seconds to appear, but should update quickly afterward.</p>
                     </Col>
                 </Row>
                 <Row className="justify-content-center">
