@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import CanvasDraw from "react-canvas-draw";
 import { Button } from "react-bootstrap";
 import { mean } from "d3-array";
@@ -73,12 +73,16 @@ class DrawingGrid extends Component {
 
     render() {
         return (
-            <div className="DrawingGrid" onMouseUp={this.handleDraw}
-                onTouchEnd={this.handleDraw}>
-                <CanvasDraw ref={this.canvasRef} lazyRadius={0}
-                    canvasWidth={280} canvasHeight={280} />
+            <div className="DrawingGrid">
+                <div onMouseUp={this.handleDraw}
+                    onTouchEnd={this.handleDraw}>
+                    <CanvasDraw ref={this.canvasRef} lazyRadius={0}
+                        canvasWidth={280} canvasHeight={280} />
+                </div>
                 <Button size="sm" variant="secondary" 
-                    onClick={this.clear}>Clear</Button>
+                    className="mt-2" onClick={this.clear}>
+                    Clear
+                </Button>
             </div>
         )
     }
