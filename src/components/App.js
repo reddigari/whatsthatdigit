@@ -24,12 +24,18 @@ class App extends Component {
             estimates: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         };
         this.handleDrawingChange = this.handleDrawingChange.bind(this);
+        this.clearPredictions = this.clearPredictions.bind(this);
         this.postData = this.postData.bind(this);
         this.updateEstimates = this.updateEstimates.bind(this);
     }
 
     handleDrawingChange(data) {
         this.setState({pixData: data}, this.updateEstimates);
+    }
+
+    clearPredictions() {
+        const zeros = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        this.setState({estimates: zeros});
     }
 
     async postData() {
@@ -73,6 +79,7 @@ class App extends Component {
                             <Col>
                                 <DrawingGrid rows={this.state.rows} cols={this.state.cols}
                                     pixData={this.state.pixData}
+                                    onClear={this.clearPredictions}
                                     onPixUpdate={this.handleDrawingChange} />
                             </Col>
                             <Col>

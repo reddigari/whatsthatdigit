@@ -19,6 +19,7 @@ class DrawingGrid extends Component {
         if (this.canvasRef.current) {
             this.canvasRef.current.clear();
         }
+        this.props.onClear();
     }
 
     getAlphaValues(array) {
@@ -41,7 +42,7 @@ class DrawingGrid extends Component {
         var values = [];
         for (let i = rowStart; i <= rowEnd; ++i) {
             let pos = this.posIn1DArray(origSize, colStart, i);
-            values = [values, ...array.slice(pos, pos + cellSize)]; 
+            values = [values, ...array.slice(pos, pos + cellSize)];
         }
         return mean(values) / 255;
     }
@@ -62,7 +63,7 @@ class DrawingGrid extends Component {
     }
 
     handleDraw() {
-        const canvas = this.canvasRef.current; 
+        const canvas = this.canvasRef.current;
         const { width, height } = canvas.canvas.drawing;
         const ctx = canvas.ctx.drawing;
         const imageData = ctx.getImageData(0, 0, width, height);
@@ -79,7 +80,7 @@ class DrawingGrid extends Component {
                     <CanvasDraw ref={this.canvasRef} lazyRadius={0}
                         canvasWidth={280} canvasHeight={280} />
                 </div>
-                <Button size="sm" variant="secondary" 
+                <Button size="sm" variant="secondary"
                     className="mt-2" onClick={this.clear}>
                     Clear
                 </Button>
