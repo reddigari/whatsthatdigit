@@ -5,7 +5,7 @@ import "../styles/Predictions.css";
 
 
 function Config(width) {
-    const height = width * 0.6;
+    const height = width * 0.5;
     this.w = width;
     this.h = height;
     this.margin = {
@@ -107,7 +107,7 @@ class Predictions extends Component {
             flexDirection: "column-reverse"
         }
         return (
-            <Col sm={6} style={colStyle} ref={this.container}>
+            <Col sm={8} style={colStyle} ref={this.container}>
                 <svg width={cfg.w} height={cfg.h}
                     ref={this.svg}>
                     <g className="chart"
