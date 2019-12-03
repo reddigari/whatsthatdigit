@@ -84,15 +84,12 @@ class App extends Component {
                 <Row className="justify-content-center">
                     <Col md={8}>
                         <Row>
-                            <Col>
-                                <DrawingGrid rows={this.state.rows} cols={this.state.cols}
-                                    pixData={this.state.pixData}
-                                    onClear={this.clearPredictions}
-                                    onPixUpdate={this.handleDrawingChange} />
-                            </Col>
-                            <Col>
-                                <Predictions estimates={this.state.estimates} />
-                            </Col>
+                            <DrawingGrid rows={this.state.rows} cols={this.state.cols}
+                                pixData={this.state.pixData}
+                                onClear={this.clearPredictions}
+                                onPixUpdate={this.handleDrawingChange}
+                                width={252} height={252} />
+                            <Predictions estimates={this.state.estimates} />
                         </Row>
                     </Col>
                 </Row>
