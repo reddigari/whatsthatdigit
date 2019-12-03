@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import CanvasDraw from "react-canvas-draw";
-import { Button } from "react-bootstrap";
+import { Col, Button } from "react-bootstrap";
 import "../styles/DrawingGrid.css";
 
 
@@ -9,8 +9,28 @@ class DrawingGrid extends Component {
     constructor(props) {
         super(props);
         this.canvasRef = React.createRef();
+        this.container = React.createRef();
         this.clear = this.clear.bind(this);
         this.handleDraw = this.handleDraw.bind(this);
+        const width = this.getWidth();
+        this.state = {canvasSize: width};
+        this.getWidth = this.getWidth.bind(this);
+        this.resize = this.resize.bind(this);
+        window.addEventListener("resize", this.resize);
+    }
+
+    getWidth() {
+        const cont = this.container.current;
+        return cont ? cont.offsetWidth * 0.9 : 252;
+    }
+
+    resize() {
+        const width = this.getWidth();
+        this.setState({canvasSize: width});
+    }
+
+    componentDidMount() {
+        this.resize();
     }
 
     clear() {
@@ -68,17 +88,18 @@ class DrawingGrid extends Component {
 
     render() {
         return (
-            <div className="DrawingGrid">
+            <Col sm={4} className="DrawingGrid" ref={this.container}>
+                <Button size="sm" variant="secondary"
+                    className="mb-2" onClick={this.clear}>
+                    Clear
+                </Button>
                 <div onMouseUp={this.handleDraw}
                     onTouchEnd={this.handleDraw}>
                     <CanvasDraw ref={this.canvasRef} lazyRadius={0}
-                        canvasWidth={280} canvasHeight={280} />
+                        canvasWidth={this.state.canvasSize}
+                        canvasHeight={this.state.canvasSize} />
                 </div>
-                <Button size="sm" variant="secondary"
-                    className="mt-2" onClick={this.clear}>
-                    Clear
-                </Button>
-            </div>
+            </Col>
         )
     }
 }

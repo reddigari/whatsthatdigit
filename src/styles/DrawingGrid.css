@@ -1,3 +1,6 @@
 .DrawingGrid canvas {
     border: 1px solid #ccc;
 }
+.DrawingGrid {
+    margin-bottom: 1.5rem;
+}

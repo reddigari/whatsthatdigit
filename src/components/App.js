@@ -71,7 +71,7 @@ class App extends Component {
     render() {
         return (
             <Container className="App">
-                <Row className="justify-content-center mb-3">
+                <Row className="justify-content-center">
                     <Col md={12}>
                         <h1>Digit Recognizer</h1>
                     </Col>
@@ -87,8 +87,7 @@ class App extends Component {
                             <DrawingGrid rows={this.state.rows} cols={this.state.cols}
                                 pixData={this.state.pixData}
                                 onClear={this.clearPredictions}
-                                onPixUpdate={this.handleDrawingChange}
-                                width={252} height={252} />
+                                onPixUpdate={this.handleDrawingChange} />
                             <Predictions estimates={this.state.estimates} />
                         </Row>
                     </Col>
