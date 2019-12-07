@@ -4,6 +4,9 @@ import { Col, Button } from "react-bootstrap";
 import "../styles/DrawingGrid.css";
 
 
+const MAX_WIDTH = 280;
+
+
 class DrawingGrid extends Component {
 
     constructor(props) {
@@ -21,7 +24,8 @@ class DrawingGrid extends Component {
 
     getWidth() {
         const cont = this.container.current;
-        return cont ? cont.offsetWidth * 0.9 : 252;
+        const width = cont ? cont.offsetWidth * 0.9 : 252;
+        return width > MAX_WIDTH ? MAX_WIDTH : width;
     }
 
     resize() {
