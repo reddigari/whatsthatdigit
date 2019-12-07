@@ -18,6 +18,7 @@ class App extends Component {
             Array(cols).fill(0)
         );
         this.state = {
+            loading: true,
             rows: rows,
             cols: cols,
             pixData: pixData,
@@ -33,7 +34,8 @@ class App extends Component {
         // Lambda backend needs several seconds to get going
         // if it hasn't been recently invoked, so send request
         // on mount
-        this.postData();
+        const resp = this.postData();
+        resp.then(() => this.setState({loading: false}));
     }
 
     handleDrawingChange(data) {
@@ -80,10 +82,13 @@ class App extends Component {
                             and moving the mouse.</b> The first predictions might take several
                             seconds to appear, but should update quickly afterward.</p>
                     </Col>
+                    <Col md={12} style={{display: this.state.loading ? "block" : "none", textAlign: "center"}}>
+                        <b>Model is initializing. This may take 5-10 seconds. Please wait.</b>
+                    </Col>
                 </Row>
                 <Row className="justify-content-center">
-                    <Col md={8}>
-                        <Row>
+                    <Col md={7}>
+                        <Row style={{visibility: this.state.loading ? "hidden" : "visible"}}>
                             <DrawingGrid rows={this.state.rows} cols={this.state.cols}
                                 pixData={this.state.pixData}
                                 onClear={this.clearPredictions}
