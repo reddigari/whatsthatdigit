@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import DrawingGrid from "./DrawingGrid.js";
 import Predictions from "./Predictions.js";
-import "../styles/App.css";
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col } from "react-bootstrap";
 import { ENDPOINT } from "../constants.js";
+import { max } from "d3";
+import "../styles/App.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 class App extends Component {
@@ -39,7 +40,11 @@ class App extends Component {
     }
 
     handleDrawingChange(data) {
-        this.setState({pixData: data}, this.updateEstimates);
+        // only update estimates if there are non-zero pixels drawn
+        const maxVal = max(data, d => max(d));
+        if (maxVal > 0) {
+            this.setState({pixData: data}, this.updateEstimates);
+        }
     }
 
     clearPredictions() {
