@@ -83,9 +83,10 @@ class App extends Component {
                         <h1>Digit Recognizer</h1>
                     </Col>
                     <Col md={6}>
-                        <p><b>Draw a digit (0-9) in the grid below by pressing the mouse button
-                            and moving the mouse.</b> The first predictions might take several
-                            seconds to appear, but should update quickly afterward.</p>
+                        <p>
+                            Draw a digit (0-9) in the grid below. The probability of each digit is
+                            displayed in the graph.
+                        </p>
                     </Col>
                     <Col md={12} style={{display: this.state.loading ? "block" : "none", textAlign: "center"}}>
                         <b>Model is initializing. This may take 5-10 seconds. Please wait.</b>
