@@ -91,6 +91,7 @@ class DrawingGrid extends Component {
     }
 
     render() {
+        const brushRadius = Math.floor(this.state.canvasSize / 30)
         return (
             <Col sm={4} className="DrawingGrid" ref={this.container}>
                 <Button size="sm" variant="secondary"
@@ -100,6 +101,7 @@ class DrawingGrid extends Component {
                 <div onMouseUp={this.handleDraw}
                     onTouchEnd={this.handleDraw}>
                     <CanvasDraw ref={this.canvasRef} lazyRadius={0}
+                        brushRadius={brushRadius}
                         canvasWidth={this.state.canvasSize}
                         canvasHeight={this.state.canvasSize} />
                 </div>
