@@ -91,7 +91,7 @@ class DrawingGrid extends Component {
     }
 
     render() {
-        const brushRadius = Math.floor(this.state.canvasSize / 30)
+        const brushRadius = Math.floor(this.state.canvasSize / 25)
         return (
             <Col sm={4} className="DrawingGrid" ref={this.container}>
                 <Button size="sm" variant="secondary"
