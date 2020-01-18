@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import DrawingGrid from "./DrawingGrid.js";
 import Predictions from "./Predictions.js";
+import About from "./About.js";
 import { Container, Row, Col } from "react-bootstrap";
 import { ENDPOINT } from "../constants.js";
 import { max } from "d3";
@@ -9,7 +10,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 class App extends Component {
-
 
     constructor() {
         super();
@@ -79,8 +79,9 @@ class App extends Component {
         return (
             <Container className="App">
                 <Row className="justify-content-center">
-                    <Col md={12}>
+                    <Col md={12} className="mb-3">
                         <h1>Digit Recognizer</h1>
+                        <About />
                     </Col>
                     <Col md={6}>
                         <p>
