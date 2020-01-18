@@ -84,7 +84,11 @@ class App extends Component {
                     </Col>
                     <Col md={6}>
                         <p>
-                            Draw a digit (0-9) in the grid below. The probability of each digit is
+                            Draw a digit (0-9) in the grid below. Try to fill
+                            most of the grid; the model will struggle to
+                            recognize very small images.
+                        </p>
+                        <p>The probability of each digit is
                             displayed in the graph.
                         </p>
                     </Col>
